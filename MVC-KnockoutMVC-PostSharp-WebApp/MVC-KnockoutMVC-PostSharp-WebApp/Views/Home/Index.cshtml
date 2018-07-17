@@ -2,9 +2,116 @@
     ViewBag.Title = "Test Page";
 }
 
-<div class="row">
-    This is a demonstrative webApp which uses the following:
-    ASP.NET MVC
-    KnockoutMVC
-    PostSharp
-</div>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="~/Scripts/paper.js"></script>
+    <script type="text/javascript">
+
+        function getRan(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        paper.install(window);
+        var width = screen.width;
+        var height = screen.height;
+
+        window.onload = function () {
+            paper.setup('myCanvas');
+
+            var rectShapes = new Array();
+            var circleShapes = new Array();
+            var Rectdestinations = new Array();
+            var Circledestinations = new Array();
+
+            for (i = 0; i < 7; i++) {
+                var rect = new Path.Rectangle(new Point(getRan(0, width), getRan(0, height)), new Size(getRan(10, 50), getRan(10, 50)));
+
+                rect.strokeColor = 'green';
+                rect.onMouseEnter = function (event) {
+                    this.fillColor = this.strokeColor;
+                }
+                rect.onMouseLeave = function (event) {
+                    this.fillColor = '#222222';
+                }
+
+                var circle = new Path.Circle(new Point(getRan(0, width), getRan(0, height)), getRan(10, 50));
+                circle.strokeColor = 'green';
+                circle.onMouseEnter = function (event) {
+                    this.fillColor = this.strokeColor;
+                }
+                circle.onMouseLeave = function (event) {
+                    this.fillColor = '#222222';
+                }
+
+                rectShapes.push(rect);
+                circleShapes.push(circle);
+
+                Rectdestinations.push(new Point(getRan(0, width), getRan(0, height)));
+                Circledestinations.push(new Point(getRan(0, width), getRan(0, height)));
+
+            } //end for
+
+            view.onFrame = function (event) {
+                // On each frame, rotate the path by 3 degrees:
+                var speed = 2;
+                var colorspeed = .3
+                view.rotate(.05);
+                circleShapes.forEach(function (element, index) {
+
+                    element.strokeColor.hue += colorspeed;
+                    var vectorX = Circledestinations[index].x - element.position.x;
+                    var vectorY = Circledestinations[index].y - element.position.y;
+
+                    element.position.x += vectorX / 1000;
+                    element.position.y += vectorY / 1000;
+                    if (vectorX < 5 && vectorY < 5) {
+                        Circledestinations[index] = new Point(getRan(0, width), getRan(0, height));
+                    }
+
+
+
+                });
+
+                rectShapes.forEach(function (element, index) {
+
+                    //element.rotate(speed);
+                    element.strokeColor.hue += colorspeed;
+                    var vectorX = Rectdestinations[index].x - element.position.x;
+                    var vectorY = Rectdestinations[index].y - element.position.y;
+
+                    element.position.x += vectorX / 1000;
+                    element.position.y += vectorY / 1000;
+                    if (vectorX < 5 && vectorY < 5) {
+                        Rectdestinations[index] = new Point(getRan(0, width), getRan(0, height));
+                    }
+
+
+                });
+
+
+
+
+
+            }
+
+        }
+
+    </script>
+    <section id="home">
+
+        <canvas id="myCanvas" style="width:1600px; height:1024px; background-color:#222222;"></canvas>
+
+    </section>
+
+</head>
+
+<body style="background-color:#222222;">
+
+    <section id="aboutme"></section>
+
+
+</body>
+
+</html>
